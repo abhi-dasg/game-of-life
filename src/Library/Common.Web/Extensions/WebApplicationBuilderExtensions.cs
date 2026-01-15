@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using AutoMapper;
 
 namespace Common.Web.Extensions
 {
@@ -50,6 +53,28 @@ namespace Common.Web.Extensions
             {
                 options.SingleLine = true;
                 options.TimestampFormat = "HH:mm:ss ";
+            });
+        }
+
+        /// <summary>
+        /// Registers AutoMapper with the dependency injection container, scanning the specified assemblies for mapping profiles.
+        /// </summary>
+        /// <remarks>This method configures AutoMapper to automatically discover and register all classes
+        /// that inherit from AutoMapper.Profile in the specified assemblies. The IMapper service
+        /// will be available for dependency injection throughout the application. If no assemblies are specified,
+        /// the calling assembly will be scanned.</remarks>
+        /// <param name="builder">The <see cref="WebApplicationBuilder"/> instance to configure. Cannot be null.</param>
+        /// <param name="assemblies">Optional assemblies to scan for AutoMapper profiles. If not specified, the calling assembly is used.</param>
+        public static void UseAutoMapper(this WebApplicationBuilder builder, params Assembly[] assemblies)
+        {
+            if (assemblies == null || assemblies.Length == 0)
+            {
+                assemblies = [Assembly.GetCallingAssembly()];
+            }
+            
+            builder.Services.AddAutoMapper(config => 
+            {
+                config.AddMaps(assemblies);
             });
         }
     }
