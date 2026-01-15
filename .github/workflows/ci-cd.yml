@@ -62,13 +62,12 @@ jobs:
       if: always()
       run: |
         cd src/coverage-results
-        file_count=$(ls -1 *.cobertura.xml 2>/dev/null | wc -l)
-        if [ $file_count -eq 1 ]; then
-          cp *.cobertura.xml merged-coverage.cobertura.xml
-        elif [ $file_count -gt 1 ]; then
-          reportgenerator -reports:"*.cobertura.xml" -targetdir:"." -reporttypes:"Cobertura"
-          mv Cobertura.xml merged-coverage.cobertura.xml
-        fi
+        reportgenerator \
+          -reports:"*.cobertura.xml" \
+          -targetdir:"." \
+          -reporttypes:"Cobertura" \
+          -assemblyfilters:"-Common.Web;-Common.Web.Test"
+        mv Cobertura.xml merged-coverage.cobertura.xml
     
     - name: Generate Coverage Summary
       if: always()
