@@ -31,20 +31,20 @@ jobs:
       working-directory: ./src
     
     - name: Run Tests with Coverage
-      run: dotnet test --no-build --configuration Release -- --coverage --coverage-output-format cobertura --report-trx
+      run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./TestResults -- --coverage-output-format cobertura
       working-directory: ./src
     
     - name: List test output files (debug)
       if: always()
       run: |
         echo "Searching for test output files..."
-        find . -type f \( -name "*.cobertura.xml" -o -name "*.trx" \) | head -30
+        find . -type f \( -name "*.cobertura.xml" -o -name "coverage.cobertura.xml" -o -name "*.trx" \) | head -30
       working-directory: ./src
     
     - name: Code Coverage Report
       uses: irongut/CodeCoverageSummary@v1.3.0
       with:
-        filename: 'src/**/*.cobertura.xml'
+        filename: 'src/TestResults/**/coverage.cobertura.xml'
         badge: true
         fail_below_min: false
         format: markdown
@@ -67,7 +67,7 @@ jobs:
       with:
         name: test-results
         path: |
-          src/**/*.trx
+          src/TestResults/**/*.trx
         retention-days: 30
         if-no-files-found: warn
     
@@ -77,7 +77,7 @@ jobs:
       with:
         name: coverage-reports
         path: |
-          src/**/*.cobertura.xml
+          src/TestResults/**/coverage.cobertura.xml
         retention-days: 30
         if-no-files-found: warn
     
@@ -86,7 +86,7 @@ jobs:
       if: success() || failure()
       with:
         name: Test Results
-        path: 'src/**/*.trx'
+        path: 'src/TestResults/**/*.trx'
         reporter: dotnet-trx
         fail-on-error: true
         fail-on-empty: true
