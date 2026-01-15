@@ -53,11 +53,11 @@ jobs:
       run: |
         mkdir -p ./coverage-results
         echo "=== Finding coverage files ==="
-        find . -type f -path "**/TestResults/*cobertura.xml" 2>/dev/null
+        find . -type f -path "*/TestResults/*cobertura.xml" ! -path "*/TestResults/*/*" 2>/dev/null
         echo ""
         echo "=== Copying coverage files ==="
         counter=1
-        for file in $(find . -type f -path "**/TestResults/*cobertura.xml" 2>/dev/null); do
+        for file in $(find . -type f -path "*/TestResults/*cobertura.xml" ! -path "*/TestResults/*/*" 2>/dev/null); do
           if [ -f "$file" ]; then
             cp "$file" "./coverage-results/coverage_$counter.cobertura.xml"
             echo "Copied: $file -> coverage_$counter.cobertura.xml"
@@ -68,10 +68,16 @@ jobs:
         echo "=== Files in coverage-results ==="
         ls -lah ./coverage-results/ || echo "No coverage files found"
         echo ""
-        echo "=== Content check of first file ==="
-        if [ -f ./coverage-results/coverage_1.cobertura.xml ]; then
-          head -n 5 ./coverage-results/coverage_1.cobertura.xml
-        fi
+        echo "=== Full content of all copied coverage files ==="
+        for copied_file in ./coverage-results/*.cobertura.xml; do
+          if [ -f "$copied_file" ]; then
+            echo "--- Content of $copied_file ---"
+            cat "$copied_file"
+            echo ""
+            echo "--- End of $copied_file ---"
+            echo ""
+          fi
+        done
       working-directory: ./src
     
     - name: Code Coverage Report
