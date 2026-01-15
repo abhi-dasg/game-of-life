@@ -7,9 +7,11 @@ using Moq;
 namespace GameOfLife.API.UnitTests.Services
 {
     [TestClass]
+    /// NOTE: These tests should be optimized by moving the common setups into test initialize.
     public abstract class WorldTests
     {
         protected World _world;
+
         protected Mock<IEvolutionRules> _mockEvolutionRules;
         protected Mock<IMetricPublisher> _mockMetricPublisher;
 
@@ -18,16 +20,6 @@ namespace GameOfLife.API.UnitTests.Services
         {
             _mockEvolutionRules = new Mock<IEvolutionRules>();
             _mockMetricPublisher = new Mock<IMetricPublisher>();
-            
-            _mockMetricPublisher
-                .Setup(m => m.PublishBirthCount(It.IsAny<int>()))
-                .Returns(Task.CompletedTask);
-            _mockMetricPublisher
-                .Setup(m => m.PublishDeathCount(It.IsAny<int>()))
-                .Returns(Task.CompletedTask);
-            _mockMetricPublisher
-                .Setup(m => m.PublishPopulationCount(It.IsAny<int>()))
-                .Returns(Task.CompletedTask);
 
             _world = new World(_mockEvolutionRules.Object, _mockMetricPublisher.Object);
         }
@@ -138,6 +130,20 @@ namespace GameOfLife.API.UnitTests.Services
         [TestClass]
         public class EvolveAsyncTests : WorldTests
         {
+            [TestInitialize]
+            public void SetupMocks()
+            {
+                _mockMetricPublisher
+                    .Setup(m => m.PublishBirthCount(It.IsAny<int>()))
+                    .Returns(Task.CompletedTask);
+                _mockMetricPublisher
+                    .Setup(m => m.PublishDeathCount(It.IsAny<int>()))
+                    .Returns(Task.CompletedTask);
+                _mockMetricPublisher
+                    .Setup(m => m.PublishPopulationCount(It.IsAny<int>()))
+                    .Returns(Task.CompletedTask);
+            }
+
             [TestMethod]
             public async Task ShouldReturnFalseWhenNoEvolutionOccurs()
             {
@@ -425,21 +431,40 @@ namespace GameOfLife.API.UnitTests.Services
         public class ConwaysGameOfLifeScenarioTests : WorldTests
         {
             [TestInitialize]
+            public void SetupMocks()
+            {
+                SetupMockPublisher();
+                SetupConwaysRules();
+            }
+
+            private void SetupMockPublisher()
+            {
+                _mockMetricPublisher
+                    .Setup(m => m.PublishBirthCount(It.IsAny<int>()))
+                    .Returns(Task.CompletedTask);
+                _mockMetricPublisher
+                    .Setup(m => m.PublishDeathCount(It.IsAny<int>()))
+                    .Returns(Task.CompletedTask);
+                _mockMetricPublisher
+                    .Setup(m => m.PublishPopulationCount(It.IsAny<int>()))
+                    .Returns(Task.CompletedTask);
+            }
+
             public void SetupConwaysRules()
             {
-                Mock<IProximityRule> mockStayAliveRule2 = new Mock<IProximityRule>();
+                Mock<IProximityRule> mockStayAliveRule2 = new();
                 mockStayAliveRule2.Setup(r => r.HasSufficientNeighbors(2)).Returns(true);
                 
-                Mock<IProximityRule> mockStayAliveRule3 = new Mock<IProximityRule>();
+                Mock<IProximityRule> mockStayAliveRule3 = new();
                 mockStayAliveRule3.Setup(r => r.HasSufficientNeighbors(3)).Returns(true);
                 
-                Mock<IProximityRule> mockBirthRule = new Mock<IProximityRule>();
+                Mock<IProximityRule> mockBirthRule = new();
                 mockBirthRule.Setup(r => r.HasSufficientNeighbors(3)).Returns(true);
                 
                 _mockEvolutionRules.Setup(r => r.StayAliveRules)
-                    .Returns(new[] { mockStayAliveRule2.Object, mockStayAliveRule3.Object });
+                    .Returns([mockStayAliveRule2.Object, mockStayAliveRule3.Object]);
                 _mockEvolutionRules.Setup(r => r.BirthRules)
-                    .Returns(new[] { mockBirthRule.Object });
+                    .Returns([mockBirthRule.Object]);
             }
 
             [TestMethod]
