@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace Common.Web.Extensions
 {
@@ -50,7 +51,8 @@ namespace Common.Web.Extensions
             logger.LogInformation("Available API endpoints:");
             foreach (dynamic route in routes)
             {
-                string methods = route.HttpMethods.Any() ? string.Join(", ", route.HttpMethods) : "ALL";
+                IEnumerable<string> httpMethods = route.HttpMethods;
+                string methods = httpMethods.Any() ? string.Join(", ", httpMethods) : "ALL";
                 string path = $"/{route.Template?.TrimStart('/')}";
                 logger.LogInformation("{Methods} - {Path}", methods, path);
             }
