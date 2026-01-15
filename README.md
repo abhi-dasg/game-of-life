@@ -26,6 +26,7 @@ services.AddSingleton<IWorldRepository, InMemoryWorldRepository>();
   - Not thread-safe
   - **NOT suitable for production**
   - Does not support horizontal scaling
+  - Does not support fault tolerance
 
 #### 2. SharedCacheWorldRepository (Recommended for Production)
 ```csharp
@@ -289,7 +290,7 @@ dotnet test
 
 ## Production Deployment Considerations
 
-When deploying to production:
+To build it for production:
 
 1. **Switch to SharedCacheWorldRepository** or **DbWorldRepository** for scalability and persistence
 2. **Switch to MonitoringMetricPublisher** for operational visibility
@@ -297,3 +298,11 @@ When deploying to production:
 4. **Implement serialization** (Protocol Buffers recommended) for repository implementations
 5. **Set up monitoring and alerting** using the metrics published by MonitoringMetricPublisher
 6. **Configure environment-specific settings** via `appsettings.Production.json`
+7. **For Single writer and multi reader scaling** Create coordinator service, leader election and follower promotion logic
+
+
+## Remaining TODO
+
+1. Unit tests for remaining classes with any business logic.
+2. Containerize
+3. Open API/Swager spec
