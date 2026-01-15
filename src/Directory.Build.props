@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Title>$(MSBuildProjectName)</Title>
+    <Authors>Abhishek Dasgupta</Authors>
+    <IsServiceTestProject>false</IsServiceTestProject>
+    <RepositoryUrl>https://github.com/abhi-dasg/game-of-life</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj' AND '$(UsingMicrosoftNETSdkWeb)' == 'true'">
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+  
+  <!-- Tests -->
+  <PropertyGroup Condition=" '$(MSBuildProjectName)' != '' ">
+    <IsServiceTestProject Condition=" '$(MSBuildProjectName.EndsWith(`.UnitTests`))' OR '$(MSBuildProjectName.EndsWith(`.FunctionalTests`))' ">true</IsServiceTestProject>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsServiceTestProject)' == 'true'">
+    <IsPublishable>false</IsPublishable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+</Project>

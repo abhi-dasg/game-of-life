@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Library/">
+    <Project Path="Library/Common.Web.Test/Common.Web.Test.csproj" />
+    <Project Path="Library/Common.Web/Common.Web.csproj" />
+  </Folder>
+  <Folder Name="/src/GameOfLife/">
+    <Project Path="GameOfLife/GameOfLife.API.FunctionalTests/GameOfLife.API.FunctionalTests.csproj" />
+    <Project Path="GameOfLife/GameOfLife.API.UnitTests/GameOfLife.API.UnitTests.csproj" />
+    <Project Path="GameOfLife/GameOfLife.API/GameOfLife.API.csproj" />
+  </Folder>
+</Solution>
