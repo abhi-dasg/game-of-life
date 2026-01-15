@@ -20,7 +20,7 @@ namespace GameOfLife.API.Services
         /// <inheritdoc/>
         public async Task<IWorld> BuildWorldAsync(IEnumerable<Entity> livingEntities)
         {
-            var world = _serviceProvider.GetRequiredService<IWorld>();
+            IWorld world = _serviceProvider.GetRequiredService<IWorld>();
             await world.InitializeAsync(livingEntities);
 
             return world;

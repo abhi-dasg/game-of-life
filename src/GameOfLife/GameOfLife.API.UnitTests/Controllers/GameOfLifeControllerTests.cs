@@ -43,11 +43,11 @@ namespace GameOfLife.API.UnitTests.Controllers
             public async Task ShouldReturnCreatedStatusCode()
             {
                 // Act
-                var result = await _controller.CreateWorld(_request, CancellationToken.None);
+                IActionResult result = await _controller.CreateWorld(_request, CancellationToken.None);
 
                 // Assert
                 Assert.IsInstanceOfType(result, typeof(ObjectResult));
-                var objectResult = (ObjectResult)result;
+                ObjectResult objectResult = (ObjectResult)result;
                 Assert.AreEqual(StatusCodes.Status201Created, objectResult.StatusCode);
             }
 
@@ -62,10 +62,10 @@ namespace GameOfLife.API.UnitTests.Controllers
 
 
                 // Act
-                var result = await _controller.CreateWorld(_request, CancellationToken.None);
+                IActionResult result = await _controller.CreateWorld(_request, CancellationToken.None);
 
                 // Assert
-                var objectResult = (ObjectResult)result;
+                ObjectResult objectResult = (ObjectResult)result;
                 Assert.AreEqual(expectedWorldId.ToString(), objectResult.Value);
             }
 
@@ -140,7 +140,7 @@ namespace GameOfLife.API.UnitTests.Controllers
             public async Task ShouldReturnOkStatusCode()
             {
                 // Act
-                var result = await _controller.Evolve(_requestWorldIdentifier);
+                IActionResult result = await _controller.Evolve(_requestWorldIdentifier);
 
                 // Assert
                 Assert.IsInstanceOfType(result, typeof(OkObjectResult));
@@ -150,10 +150,10 @@ namespace GameOfLife.API.UnitTests.Controllers
             public async Task ShouldReturnEvolvedCoordinates()
             {
                 // Act
-                var result = await _controller.Evolve(_requestWorldIdentifier);
+                IActionResult result = await _controller.Evolve(_requestWorldIdentifier);
 
                 // Assert
-                var okResult = (OkObjectResult)result;
+                OkObjectResult okResult = (OkObjectResult)result;
                 Assert.AreEqual(_expectedCoordinates, okResult.Value);
             }
 
@@ -266,7 +266,7 @@ namespace GameOfLife.API.UnitTests.Controllers
             public async Task ShouldReturnOkStatusCodeWhenSuccessful()
             {
                 // Act
-                var result = await _controller.EvolveToFinalState(_requestWorldIdentifier, CancellationToken.None);
+                IActionResult result = await _controller.EvolveToFinalState(_requestWorldIdentifier, CancellationToken.None);
 
                 // Assert
                 Assert.IsInstanceOfType(result, typeof(OkObjectResult));
@@ -276,10 +276,10 @@ namespace GameOfLife.API.UnitTests.Controllers
             public async Task ShouldReturnFinalStateCoordinates()
             {
                 // Act
-                var result = await _controller.EvolveToFinalState(_requestWorldIdentifier, CancellationToken.None);
+                IActionResult result = await _controller.EvolveToFinalState(_requestWorldIdentifier, CancellationToken.None);
 
                 // Assert
-                var okResult = (OkObjectResult)result;
+                OkObjectResult okResult = (OkObjectResult)result;
                 Assert.AreEqual(_expectedCoordinates, okResult.Value);
             }
 
@@ -287,18 +287,18 @@ namespace GameOfLife.API.UnitTests.Controllers
             public async Task ShouldReturn500WhenUnableToStabilize()
             {
                 // Arrange
-                var maxGenerations = 1000;
-                var exception = new UnableToStabilizePopulationException(maxGenerations);
+                int maxGenerations = 1000;
+                UnableToStabilizePopulationException exception = new UnableToStabilizePopulationException(maxGenerations);
                 _mockGameOfLifeService
                     .Setup(s => s.EvolveToFinalWorldStateAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                     .ThrowsAsync(exception);
 
                 // Act
-                var result = await _controller.EvolveToFinalState(_requestWorldIdentifier, CancellationToken.None);
+                IActionResult result = await _controller.EvolveToFinalState(_requestWorldIdentifier, CancellationToken.None);
 
                 // Assert
                 Assert.IsInstanceOfType(result, typeof(ObjectResult));
-                var objectResult = (ObjectResult)result;
+                ObjectResult objectResult = (ObjectResult)result;
                 Assert.AreEqual(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
             }
 
@@ -306,25 +306,25 @@ namespace GameOfLife.API.UnitTests.Controllers
             public async Task ShouldReturnErrorDetailsWhenUnableToStabilize()
             {
                 // Arrange
-                var maxGenerations = 1000;
-                var exception = new UnableToStabilizePopulationException(maxGenerations);
+                int maxGenerations = 1000;
+                UnableToStabilizePopulationException exception = new UnableToStabilizePopulationException(maxGenerations);
                 _mockGameOfLifeService
                     .Setup(s => s.EvolveToFinalWorldStateAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                     .ThrowsAsync(exception);
 
                 // Act
-                var result = await _controller.EvolveToFinalState(_requestWorldIdentifier, CancellationToken.None);
+                IActionResult result = await _controller.EvolveToFinalState(_requestWorldIdentifier, CancellationToken.None);
 
                 // Assert
-                var objectResult = (ObjectResult)result;
-                var errorResponse = objectResult.Value;
+                ObjectResult objectResult = (ObjectResult)result;
+                object? errorResponse = objectResult.Value;
                 
                 Assert.IsNotNull(errorResponse);
-                var errorType = errorResponse.GetType();
-                var errorProperty = errorType.GetProperty("error");
-                var messageProperty = errorType.GetProperty("message");
-                var worldIdentifierProperty = errorType.GetProperty("worldIdentifier");
-                var maxGenerationsProperty = errorType.GetProperty("maxGenerations");
+                Type errorType = errorResponse.GetType();
+                System.Reflection.PropertyInfo? errorProperty = errorType.GetProperty("error");
+                System.Reflection.PropertyInfo? messageProperty = errorType.GetProperty("message");
+                System.Reflection.PropertyInfo? worldIdentifierProperty = errorType.GetProperty("worldIdentifier");
+                System.Reflection.PropertyInfo? maxGenerationsProperty = errorType.GetProperty("maxGenerations");
 
                 Assert.AreEqual("PopulationStabilizationFailed", errorProperty?.GetValue(errorResponse));
                 Assert.AreEqual(exception.Message, messageProperty?.GetValue(errorResponse));

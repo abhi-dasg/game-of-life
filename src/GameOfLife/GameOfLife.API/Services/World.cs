@@ -16,7 +16,7 @@ namespace GameOfLife.API.Services
     {
         private readonly IEvolutionRules _evolutionRules;
         private readonly IMetricPublisher _metricPublisher;
-        private readonly object _evolutionLock = new object();
+        private readonly object _evolutionLock = new();
 
         private ISet<Entity> _livingEntities = new HashSet<Entity>();
 
