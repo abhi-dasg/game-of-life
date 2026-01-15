@@ -22,9 +22,9 @@ namespace GameOfLife.API.Controllers
         [HttpPost]
         [Produces("text/plain")]
         [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateWorld([FromBody] IEnumerable<Coordinate> entityLocations)
+        public async Task<IActionResult> CreateWorld([FromBody] IEnumerable<Coordinate> entityLocations, CancellationToken cancellationToken)
         {
-            Guid worldIdentifier = await _gameOfLifeService.CreateWorldAsync(entityLocations);
+            Guid worldIdentifier = await _gameOfLifeService.CreateWorldAsync(entityLocations, cancellationToken);
 
             return StatusCode(StatusCodes.Status201Created, worldIdentifier.ToString());
         }
@@ -32,9 +32,9 @@ namespace GameOfLife.API.Controllers
         [HttpPut("{worldIdentifier}/evolve")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<Coordinate>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Evolve(Guid worldIdentifier, [FromQuery] int generationCount = 1)
+        public async Task<IActionResult> Evolve(Guid worldIdentifier, [FromQuery] int generationCount = 1, CancellationToken cancellationToken = default)
         {
-            IEnumerable<Coordinate> evolvedWorldEntities = await _gameOfLifeService.EvolveWorldAsync(worldIdentifier, generationCount);
+            IEnumerable<Coordinate> evolvedWorldEntities = await _gameOfLifeService.EvolveWorldAsync(worldIdentifier, generationCount, cancellationToken);
 
             return Ok(evolvedWorldEntities);
         }
@@ -43,11 +43,11 @@ namespace GameOfLife.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<Coordinate>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> EvolveToFinalState(Guid worldIdentifier)
+        public async Task<IActionResult> EvolveToFinalState(Guid worldIdentifier, CancellationToken cancellationToken)
         {
             try
             {
-                IEnumerable<Coordinate> finalWorldEntities = await _gameOfLifeService.EvolveToFinalWorldStateAsync(worldIdentifier);
+                IEnumerable<Coordinate> finalWorldEntities = await _gameOfLifeService.EvolveToFinalWorldStateAsync(worldIdentifier, cancellationToken);
                 return Ok(finalWorldEntities);
             }
             catch (UnableToStabilizePopulationException ex)

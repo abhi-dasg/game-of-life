@@ -26,7 +26,7 @@ namespace GameOfLife.API.Services
             _configuration = configuration.Value;
         }
 
-        public async Task<Guid> CreateWorldAsync(IEnumerable<Coordinate> entityLocations)
+        public async Task<Guid> CreateWorldAsync(IEnumerable<Coordinate> entityLocations, CancellationToken cancellationToken = default)
         {
             IEnumerable<Entity> livingEntities = _mapper.Map<IEnumerable<Entity>>(entityLocations);
             IWorld newWorld = await _worldFactory.BuildWorldAsync(livingEntities);
@@ -34,7 +34,7 @@ namespace GameOfLife.API.Services
             return await _worldRepository.CreateWorldAsync(newWorld);
         }
 
-        public async Task<IEnumerable<Coordinate>> EvolveWorldAsync(Guid worldIdentifier, int generationCount = 1)
+        public async Task<IEnumerable<Coordinate>> EvolveWorldAsync(Guid worldIdentifier, int generationCount = 1, CancellationToken cancellationToken = default)
         {
             IWorld world = await _worldRepository.RetrieveWorldAsync(worldIdentifier);
             for (int i = 0; i < generationCount; i++)
@@ -52,14 +52,14 @@ namespace GameOfLife.API.Services
             return _mapper.Map<IEnumerable<Coordinate>>(world.GetLivingEntities());
         }
 
-        public async Task<IEnumerable<Coordinate>> GetAllLivingEntitiesAsync(Guid worldIdentifier)
+        public async Task<IEnumerable<Coordinate>> GetAllLivingEntitiesAsync(Guid worldIdentifier, CancellationToken cancellationToken = default)
         {
             IWorld world = await _worldRepository.RetrieveWorldAsync(worldIdentifier);
 
             return _mapper.Map<IEnumerable<Coordinate>>(world.GetLivingEntities());
         }
 
-        public async Task<IEnumerable<Coordinate>> EvolveToFinalWorldStateAsync(Guid worldIdentifier)
+        public async Task<IEnumerable<Coordinate>> EvolveToFinalWorldStateAsync(Guid worldIdentifier, CancellationToken cancellationToken = default)
         {
             IWorld world = await _worldRepository.RetrieveWorldAsync(worldIdentifier);
 
@@ -82,7 +82,7 @@ namespace GameOfLife.API.Services
             return _mapper.Map<IEnumerable<Coordinate>>(world.GetLivingEntities());
         }
 
-        public async Task<IEnumerable<Coordinate>> GetLivingEntitiesInAreaAsync(Guid worldIdentifier, Coordinate fromCorner, Coordinate toCorner)
+        public async Task<IEnumerable<Coordinate>> GetLivingEntitiesInAreaAsync(Guid worldIdentifier, Coordinate fromCorner, Coordinate toCorner, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

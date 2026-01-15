@@ -10,7 +10,7 @@ namespace GameOfLife.API.Services
     /// used for area queries should be consistent with the world representation.</remarks>
     public interface IGameOfLifeService
     {
-        Task<Guid> CreateWorldAsync(IEnumerable<Coordinate> entityLocations);
+        Task<Guid> CreateWorldAsync(IEnumerable<Coordinate> entityLocations, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Advances the simulation by the specified number of generations asynchronously.
@@ -18,7 +18,7 @@ namespace GameOfLife.API.Services
         /// <param name="worldIdentifier">The unique identifier of the world to evolve.</param>
         /// <param name="generationCount">The number of generations to evolve the world. Must be greater than zero. Defaults to 1 if not specified.</param>
         /// <returns>Evolution operation.</returns>
-        Task<IEnumerable<Coordinate>> EvolveWorldAsync(Guid worldIdentifier, int generationCount = 1);
+        Task<IEnumerable<Coordinate>> EvolveWorldAsync(Guid worldIdentifier, int generationCount = 1, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Evolves to final state and returns set of coordinates representing the world state for the specified world
@@ -27,7 +27,7 @@ namespace GameOfLife.API.Services
         /// <param name="worldIdentifier">The unique identifier of the world whose final state is to be retrieved.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a collection of coordinates
         /// representing the final state of the world. The collection is empty if the world has no coordinates.</returns>
-        Task<IEnumerable<Coordinate>> EvolveToFinalWorldStateAsync(Guid worldIdentifier);
+        Task<IEnumerable<Coordinate>> EvolveToFinalWorldStateAsync(Guid worldIdentifier, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves all entities that are currently considered living.
@@ -37,7 +37,7 @@ namespace GameOfLife.API.Services
         /// <returns>An enumerable collection of <see cref="Entity"/> objects representing all 
         /// living entities. If no entities are living, the collection will be
         /// empty.</returns>
-        Task<IEnumerable<Coordinate>> GetAllLivingEntitiesAsync(Guid worldIdentifier);
+        Task<IEnumerable<Coordinate>> GetAllLivingEntitiesAsync(Guid worldIdentifier, CancellationToken cancellationToken = default);
 
         // TODO: Add methods to get entities within specified region
 
@@ -50,6 +50,6 @@ namespace GameOfLife.API.Services
         /// <param name="toCorner">The coordinate representing the opposite corner of the area to search for living entities.</param>
         /// <returns>A collection of living entities found within the specified area. The collection will be empty 
         /// if no living entities are present.</returns>
-        Task<IEnumerable<Coordinate>> GetLivingEntitiesInAreaAsync(Guid worldIdentifier, Coordinate fromCorner, Coordinate toCorner);
+        Task<IEnumerable<Coordinate>> GetLivingEntitiesInAreaAsync(Guid worldIdentifier, Coordinate fromCorner, Coordinate toCorner, CancellationToken cancellationToken = default);
     }
 }
