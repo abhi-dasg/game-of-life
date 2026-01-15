@@ -53,11 +53,11 @@ jobs:
       run: |
         mkdir -p ./coverage-results
         echo "=== Finding coverage files ==="
-        find . -type f -name "*cobertura.xml" 2>/dev/null
+        find . -type f -name "/TestResults/*cobertura.xml" 2>/dev/null
         echo ""
         echo "=== Copying coverage files ==="
         counter=1
-        for file in $(find . -type f -name "*cobertura*.xml" 2>/dev/null); do
+        for file in $(find . -type f -name "/TestResults/*cobertura*.xml" 2>/dev/null); do
           if [ -f "$file" ]; then
             cp "$file" "./coverage-results/coverage_$counter.cobertura.xml"
             echo "Copied: $file -> coverage_$counter.cobertura.xml"
@@ -107,6 +107,7 @@ jobs:
     - name: Add Coverage PR Comment
       uses: marocchino/sticky-pull-request-comment@v2
       if: github.event_name == 'pull_request' && steps.coverage-check.outputs.has_coverage == 'true'
+      continue-on-error: true
       with:
         recreate: true
         path: code-coverage-results.md
