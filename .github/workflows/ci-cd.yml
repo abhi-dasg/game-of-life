@@ -38,7 +38,7 @@ jobs:
       if: always()
       run: |
         echo "=== Searching for coverage files ==="
-        find . -type f -name "*coverage*" 2>/dev/null | head -50
+        find . -type f -name "*cobertura*" 2>/dev/null | head -50
         echo ""
         echo "=== All files in TestResults directories ==="
         find . -path "*/TestResults/*" -type f 2>/dev/null | head -50
@@ -53,11 +53,11 @@ jobs:
       run: |
         mkdir -p ./coverage-results
         echo "=== Finding coverage files ==="
-        find . -type f -name "*/TestResults/*cobertura.xml" 2>/dev/null
+        find . -type f -name "**/TestResults/*cobertura.xml" 2>/dev/null
         echo ""
         echo "=== Copying coverage files ==="
         counter=1
-        for file in $(find . -type f -name "*/TestResults/*cobertura*.xml" 2>/dev/null); do
+        for file in $(find . -type f -name "**/TestResults/*cobertura*.xml" 2>/dev/null); do
           if [ -f "$file" ]; then
             cp "$file" "./coverage-results/coverage_$counter.cobertura.xml"
             echo "Copied: $file -> coverage_$counter.cobertura.xml"
