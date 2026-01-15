@@ -275,7 +275,7 @@ The default configuration implements the classic Conway's Game of Life:
    ```bash
    dotnet run --project GameOfLife/GameOfLife.API
    ```
-5. Access the API documentation at `https://localhost:{port}/openapi` (Development mode)
+5. Access the API documentation at `https://localhost:{port}/openapi` (Development mode) (TODO)
 
 ## Testing
 
@@ -305,4 +305,5 @@ To build it for production:
 
 1. Unit tests for remaining classes with any business logic.
 2. Containerize
-3. Open API/Swager spec
+3. Full CI/CD with branching strategy
+4. Open API/Swager spec
