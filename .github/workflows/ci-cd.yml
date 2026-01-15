@@ -31,7 +31,7 @@ jobs:
       working-directory: ./src
     
     - name: Run Unit Tests with Coverage
-      run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./coverage --logger "trx;LogFileName=test-results.trx"
+      run: dotnet test --no-build --configuration Release -- --coverage --coverage-output-format cobertura --results-directory ./coverage
       working-directory: ./src
     
     - name: Code Coverage Report
